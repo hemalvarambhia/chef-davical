@@ -20,3 +20,7 @@ end
 package "php5-curl" do
   action :install
 end
+
+package "nginx" do
+  action :install
+end

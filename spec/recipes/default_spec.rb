@@ -11,6 +11,12 @@ describe "chef-davical::default" do
     it "installs php5-curl" do
       expect(chef_run).to install_package "php5-curl"
     end
+
+    describe "setting up the web server" do
+      it "installs nginx" do
+        expect(chef_run).to install_package "nginx"
+      end
+    end
   end
 
 end
