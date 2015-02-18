@@ -28,3 +28,8 @@ end
 service "nginx" do
   action [:enable, :start]
 end
+
+template "/etc/nginx/sites-available/davical" do
+  source "nginx_configuration.erb"
+  action :create
+end

@@ -21,6 +21,10 @@ describe "chef-davical::default" do
         expect(chef_run).to enable_service("nginx")
         expect(chef_run).to start_service("nginx")
       end
+
+      it "adds the nginx configuration for davical" do
+        expect(chef_run).to create_template("/etc/nginx/sites-available/davical")
+      end
     end
   end
 
