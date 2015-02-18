@@ -16,3 +16,11 @@ gem 'berkshelf'
 
 gem 'test-kitchen'
 gem 'kitchen-vagrant'
+
+group :development do
+  gem 'guard-rspec'
+end
+
+group :test do
+  gem "chefspec"
+end
