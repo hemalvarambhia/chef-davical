@@ -16,6 +16,11 @@ describe "chef-davical::default" do
       it "installs nginx" do
         expect(chef_run).to install_package "nginx"
       end
+
+      it "enables and starts nginx" do
+        expect(chef_run).to enable_service("nginx")
+        expect(chef_run).to start_service("nginx")
+      end
     end
   end
 
