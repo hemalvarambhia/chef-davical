@@ -7,6 +7,10 @@ describe "chef-davical::default" do
     it "installs DAViCal" do
       expect(chef_run).to install_package "davical"
     end
+
+    it "installs php5-curl" do
+      expect(chef_run).to install_package "php5-curl"
+    end
   end
 
 end
