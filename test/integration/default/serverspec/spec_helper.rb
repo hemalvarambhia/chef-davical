@@ -12,3 +12,11 @@ RSpec::Matchers.define :set_server_names_to do |server_names|
     content=~expected_content
   end
 end
+
+RSpec::Matchers.define :listen_to_port do |port_number|
+  match do |content|
+    expected_content = /server \{[^}]+listen #{port_number};/m
+
+    content=~expected_content
+  end
+end

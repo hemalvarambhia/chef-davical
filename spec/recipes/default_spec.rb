@@ -33,6 +33,12 @@ describe "chef-davical::default" do
 
         expect(nginx_configuration).to set_server_names_to "ical.example.com"
       end
+
+      it "listens to port 80" do
+        nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+
+        expect(nginx_configuration).to listen_to_port("80")
+      end
     end
   end
 
