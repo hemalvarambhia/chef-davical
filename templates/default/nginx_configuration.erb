@@ -1,4 +1,6 @@
 server {
   listen 80;
   server_name <%= @configuration[:server_name]%>;
+
+  error_log /var/log/nginx/davical_error.log;
 }

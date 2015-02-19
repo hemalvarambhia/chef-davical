@@ -34,4 +34,8 @@ describe file("/etc/nginx/sites-available/davical") do
   its(:content) {
     should listen_to_port(80)
   }
+
+  its(:content) {
+    should log_errors_to "/var/log/nginx/davical_error.log"
+  }
 end

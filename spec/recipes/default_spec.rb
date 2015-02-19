@@ -40,6 +40,12 @@ describe "chef-davical::default" do
 
           expect(nginx_configuration).to listen_to_port("80")
         end
+
+        it "logs errors to /var/log/nginx/davical_error.log" do
+          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+
+          expect(nginx_configuration).to log_errors_to("/var/log/nginx/davical_error.log")
+        end
       end
     end
   end
