@@ -20,3 +20,11 @@ RSpec::Matchers.define :listen_to_port do |port_number|
     content=~expected_content
   end
 end
+
+RSpec::Matchers.define :log_errors_to do |path_to_error_log|
+  match do |content|
+    expected_content = /server \{[^}]+error_log #{Regexp.escape(path_to_error_log)};/
+
+    content=~expected_content
+  end
+end
