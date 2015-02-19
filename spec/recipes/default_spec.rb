@@ -29,28 +29,24 @@ describe "chef-davical::default" do
       end
 
       describe "configuring nginx" do
-        it "sets the server name to that defined in the node attributes" do
-          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+        before :each do
+          @nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+        end
 
-          expect(nginx_configuration).to set_server_names_to "ical.example.com"
+        it "sets the server name to that defined in the node attributes" do
+          expect(@nginx_configuration).to set_server_names_to "ical.example.com"
         end
 
         it "listens to port 80" do
-          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
-
-          expect(nginx_configuration).to listen_to_port("80")
+          expect(@nginx_configuration).to listen_to_port("80")
         end
 
         it "logs errors to /var/log/nginx/davical_error.log" do
-          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
-
-          expect(nginx_configuration).to log_errors_to("/var/log/nginx/davical_error.log")
+          expect(@nginx_configuration).to log_errors_to("/var/log/nginx/davical_error.log")
         end
 
         it "logs processed requests to /var/log/nginx/davical_access.log" do
-          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
-
-          expect(nginx_configuration).to log_processed_requests_to("/var/log/nginx/davical_access.log")
+          expect(@nginx_configuration).to log_processed_requests_to("/var/log/nginx/davical_access.log")
         end
       end
     end
