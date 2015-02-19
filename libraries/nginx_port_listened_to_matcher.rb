@@ -10,13 +10,15 @@ if defined?(ChefSpec)
         @resource = resource
         @path = @resource.name
 
-        actual_content = ChefSpec::Renderer.new(@runner, @resource).content
-        is_created? and actual_content=~/server \{[^}]+listen #{@port};/m
+        @actual_content = ChefSpec::Renderer.new(@runner, @resource).content
+        is_created? and @actual_content=~/server \{[^}]+listen #{@port};/m
       end
 
       def failure_message
         message = %Q{expected Chef run to configure nginx to }
-        message << " listen to port #{@port} in #{@path}"
+        message << " listen to port #{@port} in #{@path}\n"
+        message << "Instead configuration was:\n"
+        message << @actual_content
 
         message
       end
