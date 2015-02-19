@@ -67,5 +67,30 @@ RSpec::Matchers.define :log_processed_requests_to do |path_to_access_log|
 
     failure_message
   end
+end
 
+RSpec::Matchers.define :redirect_requests_to do |original_uri|
+  match do |content|
+    escaped_original_uri = Regexp.escape original_uri
+    expected = /location #{@request_uri} \{[^}]+rewrite #{escaped_original_uri}\s+#{@new_uri} break;/m
+
+    content=~expected
+  end
+
+  chain :to do |new_uri|
+    @new_uri = Regexp.escape new_uri
+  end
+
+  chain :when_request_uri_matches do |request_uri|
+    @request_uri = Regexp.escape request_uri
+  end
+
+  failure_message do |actual|
+    failure_message = "Expected Nginx to redirect requests like #{original_uri}\n"
+    failure_message << " to #{@new_uri} when the request URI matches #{@request_uri}\n"
+    failure_message << "Instead, got:\n"
+    failure_message << actual
+
+    failure_message
+  end
 end

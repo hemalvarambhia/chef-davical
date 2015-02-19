@@ -14,4 +14,8 @@ if defined?(ChefSpec)
   def log_processed_requests_to(path_to_access_log)
     ChefSpec::Matchers::NginxAccessLogMatcher.new(chef_run, path_to_access_log)
   end
+
+  def forward_requests_to(original_uri)
+    ChefSpec::Matchers::NginxURIRewriteLocationMatcher.new(chef_run, original_uri)
+  end
 end
