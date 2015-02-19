@@ -42,4 +42,8 @@ describe file("/etc/nginx/sites-available/davical") do
   its(:content) {
     should log_processed_requests_to "/var/log/nginx/davical_access.log"
   }
+
+  its(:content) {
+    should redirect_requests_to("^/principals/users/(.+)$").to("http://ical.example.com/caldav.php/$1").when_request_uri_matches("/")
+  }
 end

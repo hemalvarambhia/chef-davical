@@ -48,6 +48,12 @@ describe "chef-davical::default" do
         it "logs processed requests to /var/log/nginx/davical_access.log" do
           expect(@nginx_configuration).to log_processed_requests_to("/var/log/nginx/davical_access.log")
         end
+
+        describe "when the request URL matches /" do
+          it "forwards requests to URIs like ^/principals/users/(.+)$ to http://ical.example.com/caldav.php/$1" do
+            expect(@nginx_configuration).to forward_requests_to("^/principals/users/(.+)$").to("http://ical.example.com/caldav.php/$1").when_request_uri_matches("/")
+          end
+        end
       end
     end
   end

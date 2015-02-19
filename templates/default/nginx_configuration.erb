@@ -4,4 +4,8 @@ server {
 
   access_log /var/log/nginx/davical_access.log;
   error_log /var/log/nginx/davical_error.log;
+
+  location / {
+    rewrite ^/principals/users/(.+)$    http://ical.example.com/caldav.php/$1 break;
+  }
 }
