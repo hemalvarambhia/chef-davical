@@ -28,16 +28,18 @@ describe "chef-davical::default" do
         expect(chef_run).to create_template("/etc/nginx/sites-available/davical")
       end
 
-      it "sets the server name to that defined in the node attributes" do
-        nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+      describe "configuring nginx" do
+        it "sets the server name to that defined in the node attributes" do
+          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
 
-        expect(nginx_configuration).to set_server_names_to "ical.example.com"
-      end
+          expect(nginx_configuration).to set_server_names_to "ical.example.com"
+        end
 
-      it "listens to port 80" do
-        nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+        it "listens to port 80" do
+          nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
 
-        expect(nginx_configuration).to listen_to_port("80")
+          expect(nginx_configuration).to listen_to_port("80")
+        end
       end
     end
   end
