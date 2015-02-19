@@ -1,6 +1,4 @@
-require 'serverspec'
-
-set :backend, :exec
+require 'spec_helper'
 
 describe package("davical") do
   it { should be_installed }
@@ -25,4 +23,7 @@ end
 
 describe file("/etc/nginx/sites-available/davical") do
   it { should be_file }
+  its(:content) {
+    should set_server_names_to(["ical.example.com"])
+  }
 end

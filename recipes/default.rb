@@ -31,5 +31,6 @@ end
 
 template "/etc/nginx/sites-available/davical" do
   source "nginx_configuration.erb"
+  variables configuration: {server_name: node[:davical][:server_name] }
   action :create
 end
