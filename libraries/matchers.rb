@@ -10,4 +10,8 @@ if defined?(ChefSpec)
   def log_errors_to(path_to_log_file)
     ChefSpec::Matchers::NginxErrorLogMatcher.new(chef_run, path_to_log_file)
   end
+
+  def log_processed_requests_to(path_to_access_log)
+    ChefSpec::Matchers::NginxAccessLogMatcher.new(chef_run, path_to_access_log)
+  end
 end
