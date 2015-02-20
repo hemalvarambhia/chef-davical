@@ -69,7 +69,7 @@ RSpec::Matchers.define :log_processed_requests_to do |path_to_access_log|
   end
 end
 
-RSpec::Matchers.define :redirect_requests_to do |original_uri|
+RSpec::Matchers.define :redirect_requests_like do |original_uri|
   match do |content|
     escaped_original_uri = Regexp.escape original_uri
     expected = /location #{@request_uri} \{[^}]+rewrite #{escaped_original_uri}\s+#{@new_uri} break;/m
