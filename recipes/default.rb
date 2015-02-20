@@ -32,5 +32,6 @@ end
 template "/etc/nginx/sites-available/davical" do
   source "nginx_configuration.erb"
   variables configuration: {server_name: node[:davical][:server_name] }
+  notifies :reload, "service[nginx]"
   action :create
 end

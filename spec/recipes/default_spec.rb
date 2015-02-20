@@ -33,6 +33,10 @@ describe "chef-davical::default" do
           @nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
         end
 
+        it "reloads nginx should the configuration change" do
+          expect(@nginx_configuration).to notify("service[nginx]").to(:reload)
+        end
+
         it "sets the server name to that defined in the node attributes" do
           expect(@nginx_configuration).to set_server_names_to "ical.example.com"
         end
