@@ -35,3 +35,12 @@ template "/etc/nginx/sites-available/davical" do
   notifies :reload, "service[nginx]"
   action :create
 end
+
+service "postgres" do
+  action :nothing
+end
+
+cookbook_file "/etc/postgresql/9.1/main/pg_hba.conf" do
+  notifies :reload, "service[postgres]"
+  action :create
+end

@@ -63,6 +63,31 @@ describe "chef-davical::default" do
           end
         end
       end
+
+      describe "configuring postgresql" do
+
+        it "creates the host-based authentication file" do
+          expect(chef_run).to create_cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+        end
+
+        it "trusts davical_app with davical database" do
+          postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+
+          expect(postgres_configuration).to trust_user("davical_app").with_database("davical")
+        end
+
+        it "trusts davical_dba with davical database" do
+          postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+
+          expect(postgres_configuration).to trust_user("davical_dba").with_database("davical")
+        end
+
+        it "reloads postgresql on any changes" do
+          postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+
+          expect(postgres_configuration).to notify("service[postgres]").to(:reload)
+        end
+      end
     end
   end
 

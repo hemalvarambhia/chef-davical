@@ -18,4 +18,8 @@ if defined?(ChefSpec)
   def forward_requests_to(original_uri)
     ChefSpec::Matchers::NginxURIRewriteLocationMatcher.new(chef_run, original_uri)
   end
+
+  def trust_user(username)
+    ChefSpec::Matchers::PostgresqlAuthenticatedHostMatcher.new(chef_run, username)
+  end
 end
