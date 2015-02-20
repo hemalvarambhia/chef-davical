@@ -6,6 +6,7 @@ server {
   error_log /var/log/nginx/davical_error.log;
 
   location / {
-    rewrite ^/principals/users/(.+)$    http://ical.example.com/caldav.php/$1 break;
+    rewrite ^/principals/users/(.+)$    http://<%= @configuration[:server_name]%>/caldav.php/$1 break;
+    rewrite /.well-known/(.+)$          http://<%= @configuration[:server_name]%>/caldav.php/.well-known/$1 break;
   }
 }

@@ -46,4 +46,8 @@ describe file("/etc/nginx/sites-available/davical") do
   its(:content) {
     should redirect_requests_to("^/principals/users/(.+)$").to("http://ical.example.com/caldav.php/$1").when_request_uri_matches("/")
   }
+
+  its(:content) {
+    should redirect_requests_to("/.well-known/(.+)$").to("http://ical.example.com/caldav.php/.well-known/$1").when_request_uri_matches("/")
+  }
 end
