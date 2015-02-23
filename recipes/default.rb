@@ -42,6 +42,11 @@ template "/etc/nginx/sites-available/davical" do
   action :create
 end
 
+link "/etc/nginx/sites-enabled/davical" do
+  to "/etc/nginx/sites-available/davical"
+  action :create
+end
+
 service "postgresql" do
   action :start
 end

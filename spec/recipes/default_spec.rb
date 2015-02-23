@@ -66,6 +66,10 @@ describe "chef-davical::default" do
             expect(@nginx_configuration).to forward_requests_to("/.well-known/(.+)$").to("http://ical.example.com/caldav.php/.well-known/$1").when_request_uri_matches("/")
           end
         end
+
+        it "enables the davical site" do
+          expect(chef_run).to create_link("/etc/nginx/sites-enabled/davical").with(to: "/etc/nginx/sites-available/davical")
+        end
       end
 
       describe "configuring postgresql" do
