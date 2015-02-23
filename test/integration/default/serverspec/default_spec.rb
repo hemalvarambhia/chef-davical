@@ -52,6 +52,10 @@ describe file("/etc/nginx/sites-available/davical") do
   }
 end
 
+describe file "/etc/nginx/sites-enabled/davical" do
+  it { should be_linked_to "/etc/nginx/sites-available/davical" }
+end
+
 describe package "postgresql-9.1" do
   it { should be_installed }
 end
