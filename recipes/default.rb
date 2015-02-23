@@ -21,6 +21,12 @@ package "php5-curl" do
   action :install
 end
 
+firewall_rule "http" do
+  protocol :tcp
+  port 80
+  action :allow
+end
+
 package "nginx" do
   action :install
 end

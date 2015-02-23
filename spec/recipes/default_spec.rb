@@ -15,6 +15,10 @@ describe "chef-davical::default" do
     end
 
     describe "setting up the web server" do
+      it "opens up firewall to http connections" do
+        expect(chef_run).to allow_firewall_rule("http").with(protocol: :tcp, port: 80)
+      end
+
       it "installs nginx" do
         expect(chef_run).to install_package "nginx"
       end
