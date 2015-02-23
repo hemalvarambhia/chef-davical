@@ -89,8 +89,12 @@ describe "chef-davical::default" do
         it "reloads postgresql on any changes" do
           postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
 
-          expect(postgres_configuration).to notify("service[postgres]").to(:reload)
+          expect(postgres_configuration).to notify("service[postgresql]").to(:restart).immediately
         end
+      end
+
+      it "creates the database" do
+        expect(chef_run).to run_execute("create-database.sh").with(cwd: "/usr/share/davical/dba", command: "./create-database.sh", user: "postgres" )
       end
     end
   end
