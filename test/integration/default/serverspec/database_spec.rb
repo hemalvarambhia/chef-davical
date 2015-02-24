@@ -19,3 +19,11 @@ describe file("/etc/postgresql/9.1/main/pg_hba.conf") do
     should match /local   davical    davical_dba   trust/
   }
 end
+
+describe command("sudo su - postgres -c \"psql -c 'select datname from pg_database;'\"") do
+  its(:stdout) {
+    should match /davical/
+  }
+
+  its(:exit_status) { should eq 0 }
+end
