@@ -12,4 +12,4 @@ suites:
   - name: default
     run_list:
       - recipe[chef-davical::default]
-    attributes: {davical: {server_name: "ical.example.com", system_email: "admin@email.com", time_zone: "Europe/London", system_name: "Davical Application" }}
+    attributes: {davical: {server_name: "ical.example.com", system_email: "admin@email.com", system_name: "Application" }}
