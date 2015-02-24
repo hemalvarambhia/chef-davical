@@ -65,3 +65,15 @@ execute "create-database.sh" do
   cwd "/usr/share/davical/dba"
   action :run
 end
+
+davical_configuration = {
+    domain_name: node[:davical][:server_name],
+    admin_email: node[:davical][:system_email],
+    local_time_zone: node[:davical][:time_zone],
+    system_name: node[:davical][:system_name]
+}
+template "/etc/davical/config.php" do
+  source "config.php.erb"
+  variables davical_configuration
+  action :create
+end
