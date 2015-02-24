@@ -4,7 +4,7 @@ describe package "postgresql-9.1" do
   it { should be_installed }
 end
 
-describe service "postgres" do
+describe service "postgresql" do
   it { should be_enabled }
   it { should be_running }
 end

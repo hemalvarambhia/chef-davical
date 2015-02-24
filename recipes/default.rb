@@ -47,24 +47,7 @@ link "/etc/nginx/sites-enabled/davical" do
   action :create
 end
 
-service "postgresql" do
-  action :start
-end
-
-cookbook_file "/etc/postgresql/9.1/main/pg_hba.conf" do
-  owner "postgres"
-  group "postgres"
-  mode 0600
-  notifies :restart, "service[postgresql]", :immediately
-  action :create
-end
-
-execute "create-database.sh" do
-  command "./create-database.sh"
-  user "postgres"
-  cwd "/usr/share/davical/dba"
-  action :run
-end
+include_recipe "chef-davical::database"
 
 davical_configuration = {
     domain_name: node[:davical][:server_name],
