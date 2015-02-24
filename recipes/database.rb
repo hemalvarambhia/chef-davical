@@ -1,4 +1,4 @@
-Chef::Resource::Execute.send(:include, ChefDavicalHelper)
+Chef::Resource::Execute.send(:include, ChefDavical::Helper)
 
 service "postgresql" do
   action :start
@@ -16,6 +16,6 @@ execute "create-database.sh" do
   command "./create-database.sh"
   user "postgres"
   cwd "/usr/share/davical/dba"
-  not_if davical_database_exists?, user: "postgres"
+  not_if { davical_database_exists? }
   action :run
 end
