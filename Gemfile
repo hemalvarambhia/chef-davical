@@ -14,13 +14,17 @@ gem 'berkshelf'
 #   gem "vagrant-omnibus", github: "schisamo/vagrant-omnibus"
 # end
 
-gem 'test-kitchen'
-gem 'kitchen-vagrant'
-
 group :development do
   gem 'guard-rspec'
 end
 
 group :test do
   gem "chefspec"
+end
+
+group :integration do
+  gem 'test-kitchen'
+  gem 'kitchen-vagrant'
+  gem 'kitchen-digitalocean'
+  gem 'serverspec'
 end

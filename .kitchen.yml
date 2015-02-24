@@ -1,12 +1,21 @@
 ---
 driver:
   name: vagrant
+  name: digitalocean
 
 provisioner:
   name: chef_solo
 
 platforms:
   - name: ubuntu-12.04
+    driver:
+      name: vagrant
+  - name: digitalocean-ubuntu-12.04
+    driver:
+      name: digitalocean
+      access_token: <%= ENV['DIGITALOCEAN_ACCESS_TOKEN'] %>
+      ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEY_IDS'] %>
+      image: 10321777
 
 suites:
   - name: default
