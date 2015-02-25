@@ -15,7 +15,7 @@ platforms:
       name: digitalocean
       access_token: <%= ENV['DIGITALOCEAN_ACCESS_TOKEN'] %>
       ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEY_IDS'] %>
-      image: 10321777
+      image: ubuntu-12-04-x32
 
 suites:
   - name: default
