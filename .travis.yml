@@ -3,5 +3,3 @@ rvm:
 - 2.0.0
 script:
 - bundle exec rake travis --trace
-after_script:
-- cat .kitchen/logs/*
