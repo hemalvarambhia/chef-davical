@@ -40,6 +40,10 @@ describe file("/etc/nginx/sites-available/davical") do
   }
 end
 
+describe file("/etc/nginx/sites-enabled/default") do
+  it { should_not be_file }
+end
+
 describe file "/etc/nginx/sites-enabled/davical" do
   it { should be_linked_to "/etc/nginx/sites-available/davical" }
 end

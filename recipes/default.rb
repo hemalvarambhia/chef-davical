@@ -31,6 +31,10 @@ package "nginx" do
   action :install
 end
 
+link "/etc/nginx/sites-enabled/default" do
+  action :delete
+end
+
 service "nginx" do
   action [:enable, :start]
 end
@@ -38,7 +42,7 @@ end
 template "/etc/nginx/sites-available/davical" do
   source "nginx_configuration.erb"
   variables configuration: {server_name: node[:davical][:server_name] }
-  notifies :reload, "service[nginx]"
+  notifies :restart, "service[nginx]"
   action :create
 end
 
@@ -49,6 +53,10 @@ end
 
 include_recipe "chef-davical::database"
 
+service "php5-fpm" do
+  action :nothing
+end
+
 davical_configuration = {
     domain_name: node[:davical][:server_name],
     admin_email: node[:davical][:system_email],
@@ -58,5 +66,7 @@ davical_configuration = {
 template "/etc/davical/config.php" do
   source "config.php.erb"
   variables davical_configuration
+  mode 0644
+  notifies :restart, "service[php5-fpm]"
   action :create
 end
