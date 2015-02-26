@@ -73,10 +73,6 @@ describe "chef-davical::default" do
         it "enables the davical site" do
           expect(chef_run).to create_link("/etc/nginx/sites-enabled/davical").with(to: "/etc/nginx/sites-available/davical")
         end
-
-        it "disables the default nginx configuration" do
-          expect(chef_run).to delete_link("/etc/nginx/sites-enabled/default")
-        end
       end
     end
 

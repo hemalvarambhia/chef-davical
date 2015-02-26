@@ -31,12 +31,6 @@ package "nginx" do
   action :install
 end
 
-link "/etc/nginx/sites-enabled/default" do
-  link_type :symbolic
-  to "/etc/nginx/sites-available/default"
-  action :delete
-end
-
 service "nginx" do
   action [:enable, :start]
 end
