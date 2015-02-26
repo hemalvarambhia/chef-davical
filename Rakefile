@@ -1,5 +1,4 @@
 require 'rspec/core/rake_task'
-require 'rubocop/rake_task'
 
 # Rspec and ChefSpec
 desc "Run ChefSpec examples"
