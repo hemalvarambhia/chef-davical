@@ -16,7 +16,7 @@ namespace :integration do
   end
 end
 
-desc 'Run ChefSpec testss on Travis'
+desc 'Run ChefSpec tests on Travis'
 task travis: ['spec']
 
 # Default
