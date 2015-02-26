@@ -32,6 +32,8 @@ package "nginx" do
 end
 
 link "/etc/nginx/sites-enabled/default" do
+  link_type :symbolic
+  to "/etc/nginx/sites-available/default"
   action :delete
 end
 
