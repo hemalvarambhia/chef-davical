@@ -1,7 +1,7 @@
 Chef::Resource::Execute.send(:include, ChefDavical::Helper)
 
 service "postgresql" do
-  action :start
+  action :nothing
 end
 
 cookbook_file "/etc/postgresql/9.1/main/pg_hba.conf" do
