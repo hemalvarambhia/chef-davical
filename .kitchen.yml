@@ -10,6 +10,9 @@ platforms:
   - name: ubuntu-12.04
     driver:
       name: vagrant
+  - name: ubuntu-10.04
+    driver:
+      name: vagrant
   - name: digitalocean-ubuntu-12.04
     driver:
       name: digitalocean
