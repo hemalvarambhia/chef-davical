@@ -6,12 +6,8 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-case node.platform_family
-  when "debian"
-    include_recipe "apt::default"
-  when "rhel"
-    include_recipe "yum-epel::default"
-end
+
+include_recipe "apt::default"
 
 package "davical" do
   action :install
@@ -19,6 +15,12 @@ end
 
 package "php5-curl" do
   action :install
+end
+
+firewall_rule "http" do
+  protocol :tcp
+  port 80
+  action :allow
 end
 
 package "nginx" do
@@ -32,7 +34,7 @@ end
 template "/etc/nginx/sites-available/davical" do
   source "nginx_configuration.erb"
   variables configuration: {server_name: node[:davical][:server_name] }
-  notifies :reload, "service[nginx]"
+  notifies :restart, "service[nginx]"
   action :create
 end
 
@@ -41,11 +43,22 @@ link "/etc/nginx/sites-enabled/davical" do
   action :create
 end
 
-service "postgres" do
+include_recipe "chef-davical::database"
+
+service "php5-fpm" do
   action :nothing
 end
 
-cookbook_file "/etc/postgresql/9.1/main/pg_hba.conf" do
-  notifies :reload, "service[postgres]"
+davical_configuration = {
+    domain_name: node[:davical][:server_name],
+    admin_email: node[:davical][:system_email],
+    local_time_zone: node[:davical][:time_zone],
+    system_name: node[:davical][:system_name]
+}
+template "/etc/davical/config.php" do
+  source "config.php.erb"
+  variables davical_configuration
+  mode 0644
+  notifies :restart, "service[php5-fpm]"
   action :create
 end

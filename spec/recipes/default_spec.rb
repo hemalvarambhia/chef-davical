@@ -3,6 +3,9 @@ require_relative "../spec_helper.rb"
 describe "chef-davical::default" do
   let(:chef_run) { ChefSpec::SoloRunner.new do |node|
     node.set[:davical][:server_name] = "ical.example.com"
+    node.set[:davical][:system_name] = "Davical Application"
+    node.set[:davical][:system_email] = "admin@email.com"
+    node.set[:davical][:time_zone] = "Europe/London"
   end.converge(described_recipe) }
 
   context "on ubuntu" do
@@ -15,6 +18,10 @@ describe "chef-davical::default" do
     end
 
     describe "setting up the web server" do
+      it "opens up firewall to http connections" do
+        expect(chef_run).to allow_firewall_rule("http").with(protocol: :tcp, port: 80)
+      end
+
       it "installs nginx" do
         expect(chef_run).to install_package "nginx"
       end
@@ -34,7 +41,7 @@ describe "chef-davical::default" do
         end
 
         it "reloads nginx should the configuration change" do
-          expect(@nginx_configuration).to notify("service[nginx]").to(:reload)
+          expect(@nginx_configuration).to notify("service[nginx]").to(:restart)
         end
 
         it "sets the server name to that defined in the node attributes" do
@@ -63,36 +70,47 @@ describe "chef-davical::default" do
           end
         end
 
-        it "enables the davical website" do
+        it "enables the davical site" do
           expect(chef_run).to create_link("/etc/nginx/sites-enabled/davical").with(to: "/etc/nginx/sites-available/davical")
         end
       end
+    end
 
-      describe "configuring postgresql" do
+    it "sets up the davical database" do
+      expect(chef_run).to include_recipe("chef-davical::database")
+    end
 
-        it "creates the host-based authentication file" do
-          expect(chef_run).to create_cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
-        end
+    describe "configuring davical" do
+      it "creates the davical config file" do
+        expect(chef_run).to create_template("/etc/davical/config.php").with(mode: 0644)
+      end
 
-        it "trusts davical_app with davical database" do
-          postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+      it "configures the application's connection to the davical database" do
+        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->pg_connect\[\] = \'dbname=davical port=5432 user=davical_app\';/)
+      end
 
-          expect(postgres_configuration).to trust_user("davical_app").with_database("davical")
-        end
+      it "configures application's FQDN" do
+        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->domain_name = \'ical.example.com\';/)
+      end
 
-        it "trusts davical_dba with davical database" do
-          postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+      it "configures the system name" do
+        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->system_name = \'Davical Application\';/)
+      end
 
-          expect(postgres_configuration).to trust_user("davical_dba").with_database("davical")
-        end
+      it "configures the system's email" do
+        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->admin_email = \'admin@email.com\';/)
+      end
 
-        it "reloads postgresql on any changes" do
-          postgres_configuration = chef_run.cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")
+      it "configures the system time zone" do
+        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->local_tzid = \'Europe\/London\';/)
+      end
 
-          expect(postgres_configuration).to notify("service[postgres]").to(:reload)
-        end
+      it "restarts php5-fpm on any changes" do
+        davical_configuration = chef_run.template("/etc/davical/config.php")
+        expect(davical_configuration).to notify("service[php5-fpm]").to(:restart)
       end
     end
+
   end
 
 end

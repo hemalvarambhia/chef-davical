@@ -1,17 +1,5 @@
 require 'spec_helper'
 
-describe package("davical") do
-  it { should be_installed }
-end
-
-describe package("libawl-php") do
-  it { should be_installed }
-end
-
-describe package("php5-curl") do
-  it { should be_installed }
-end
-
 describe port("80") do
   it { should be_listening }
 end
@@ -54,24 +42,4 @@ end
 
 describe file("/etc/nginx/sites-enabled/davical") do
   it { should be_linked_to "/etc/nginx/sites-available/davical" }
-end
-
-describe package "postgresql-9.1" do
-  it { should be_installed }
-end
-
-describe service "postgres" do
-  it { should be_enabled }
-  it { should be_running }
-end
-
-describe file("/etc/postgresql/9.1/main/pg_hba.conf") do
-  it { should be_file }
-  its(:content) {
-    should match /local   davical    davical_app   trust/
-  }
-
-  its(:content) {
-    should match /local   davical    davical_dba   trust/
-  }
 end
