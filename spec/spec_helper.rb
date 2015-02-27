@@ -1,8 +1,7 @@
 # Added by ChefSpec
 require 'chefspec'
+require 'chefspec/berkshelf'
 
-# Uncomment to use ChefSpec's Berkshelf extension
-# require 'chefspec/berkshelf'
 Dir['libraries/*.rb'].each { |f| require File.expand_path(f) }
 
 RSpec.configure do |config|
