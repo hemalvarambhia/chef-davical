@@ -1,15 +1,48 @@
 require_relative "../spec_helper.rb"
 
 describe "chef-davical::database" do
-  let(:chef_run) { ChefSpec::SoloRunner.new do |node|
-    node.set[:davical][:server_name] = "ical.example.com"
-    node.set[:davical][:system_name] = "Davical Application"
-    node.set[:davical][:system_email] = "admin@email.com"
-    node.set[:davical][:time_zone] = "Europe/London"
-  end.converge(described_recipe) }
-
   context "on ubuntu" do
-    context "version 12.04" do
+    context "10.04" do
+      let(:chef_run) { ChefSpec::SoloRunner.new(platform: "ubuntu", version: "10.04") do |node|
+        node.set[:davical][:server_name] = "ical.example.com"
+        node.set[:davical][:system_name] = "Davical Application"
+        node.set[:davical][:system_email] = "admin@email.com"
+        node.set[:davical][:time_zone] = "Europe/London"
+      end.converge(described_recipe) }
+
+      it "installs postgresql server 8.4" do
+        expect(chef_run).to install_package("postgresql-8.4")
+      end
+
+      it "initialises the database cluster" do
+        expect(chef_run).to run_execute("initialise-database-cluster").with(command: "pg_createcluster --locale en_GB.UTF-8 8.4 main")
+      end
+
+      context "when cluster is already initialised" do
+        it "does not initialise it again" do
+          Chef::Resource::Execute.any_instance.stub(:cluster_initialised?).with("8.4").and_return(true)
+
+          expect(chef_run).to_not run_execute("initialise-database-cluster").with(command: "pg_createcluster --locale en_GB.UTF-8 8.4 main")
+        end
+      end
+    end
+
+    context "12.04" do
+      let(:chef_run) { ChefSpec::SoloRunner.new(platform: "ubuntu", version: "12.04") do |node|
+        node.set[:davical][:server_name] = "ical.example.com"
+        node.set[:davical][:system_name] = "Davical Application"
+        node.set[:davical][:system_email] = "admin@email.com"
+        node.set[:davical][:time_zone] = "Europe/London"
+      end.converge(described_recipe) }
+
+      it "installs postgresql server 9.1" do
+        expect(chef_run).to install_package("postgresql-9.1")
+      end
+
+      it "does not initialise the database cluster" do
+        expect(chef_run).to_not run_execute("initialise-database-cluster").with(command: "pg_createcluster --locale en_GB.UTF-8 9.1 main")
+      end
+
       describe "configuring postgresql" do
         it "creates the host-based authentication file" do
           expect(chef_run).to create_cookbook_file("/etc/postgresql/9.1/main/pg_hba.conf")

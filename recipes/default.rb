@@ -13,40 +13,35 @@ package "davical" do
   action :install
 end
 
+include_recipe "chef-davical::web_server"
+
+include_recipe "chef-davical::database"
+
 package "php5-curl" do
   action :install
 end
 
-firewall_rule "http" do
-  protocol :tcp
-  port 80
-  action :allow
-end
+if node.platform_version == "10.04"
+  package "python-software-properties" do
+    action :install
+  end
 
-package "nginx" do
-  action :install
-end
+  apt_repository "brianmercer-php" do
+    uri "http://ppa.launchpad.net/brianmercer/php/ubuntu"
+    distribution node[:lsb][:codename]
+    components ["main"]
+    keyserver "keyserver.ubuntu.com"
+    key "8D0DC64F"
+    action :add
+  end
 
-service "nginx" do
-  action [:enable, :start]
+  package "php5-fpm" do
+    action :install
+  end
 end
-
-template "/etc/nginx/sites-available/davical" do
-  source "nginx_configuration.erb"
-  variables configuration: {server_name: node[:davical][:server_name] }
-  notifies :restart, "service[nginx]"
-  action :create
-end
-
-link "/etc/nginx/sites-enabled/davical" do
-  to "/etc/nginx/sites-available/davical"
-  action :create
-end
-
-include_recipe "chef-davical::database"
 
 service "php5-fpm" do
-  action :nothing
+  action :start
 end
 
 davical_configuration = {

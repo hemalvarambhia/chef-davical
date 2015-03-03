@@ -9,108 +9,74 @@ describe "chef-davical::default" do
   end.converge(described_recipe) }
 
   context "on ubuntu" do
-    it "installs DAViCal" do
-      expect(chef_run).to install_package "davical"
-    end
-
-    it "installs php5-curl" do
-      expect(chef_run).to install_package "php5-curl"
-    end
-
-    describe "setting up the web server" do
-      it "opens up firewall to http connections" do
-        expect(chef_run).to allow_firewall_rule("http").with(protocol: :tcp, port: 80)
+    context "all versions" do
+      it "installs DAViCal" do
+        expect(chef_run).to install_package "davical"
       end
 
-      it "installs nginx" do
-        expect(chef_run).to install_package "nginx"
+      it "installs php5-curl" do
+        expect(chef_run).to install_package "php5-curl"
       end
 
-      it "enables and starts nginx" do
-        expect(chef_run).to enable_service("nginx")
-        expect(chef_run).to start_service("nginx")
+      it "sets up the web server" do
+        expect(chef_run).to include_recipe "chef-davical::web_server"
       end
 
-      it "adds the nginx configuration for davical" do
-        expect(chef_run).to create_template("/etc/nginx/sites-available/davical")
+      it "sets up the davical database" do
+        expect(chef_run).to include_recipe "chef-davical::database"
       end
 
-      describe "configuring nginx" do
-        before :each do
-          @nginx_configuration = chef_run.template("/etc/nginx/sites-available/davical")
+      describe "configuring davical" do
+        it "creates the davical config file" do
+          expect(chef_run).to create_template("/etc/davical/config.php").with(mode: 0644)
         end
 
-        it "reloads nginx should the configuration change" do
-          expect(@nginx_configuration).to notify("service[nginx]").to(:restart)
+        it "configures the application's connection to the davical database" do
+          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->pg_connect\[\] = \'dbname=davical port=5432 user=davical_app\';/)
         end
 
-        it "sets the server name to that defined in the node attributes" do
-          expect(@nginx_configuration).to set_server_names_to "ical.example.com"
+        it "configures application's FQDN" do
+          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->domain_name = \'ical.example.com\';/)
         end
 
-        it "listens to port 80" do
-          expect(@nginx_configuration).to listen_to_port("80")
+        it "configures the system name" do
+          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->system_name = \'Davical Application\';/)
         end
 
-        it "logs errors to /var/log/nginx/davical_error.log" do
-          expect(@nginx_configuration).to log_errors_to("/var/log/nginx/davical_error.log")
+        it "configures the system's email" do
+          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->admin_email = \'admin@email.com\';/)
         end
 
-        it "logs processed requests to /var/log/nginx/davical_access.log" do
-          expect(@nginx_configuration).to log_processed_requests_to("/var/log/nginx/davical_access.log")
+        it "configures the system time zone" do
+          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->local_tzid = \'Europe\/London\';/)
         end
 
-        describe "when the request URL matches /" do
-          it "forwards requests to URIs like ^/principals/users/(.+)$ to http://ical.example.com/caldav.php/$1" do
-            expect(@nginx_configuration).to forward_requests_like("^/principals/users/(.+)$").to("http://ical.example.com/caldav.php/$1").when_request_uri_matches("/")
-          end
-
-          it "forwards requests to URIs like /.well-known/(.+)$ to http://ical.example.com/caldav.php/.well-known/$" do
-            expect(@nginx_configuration).to forward_requests_like("/.well-known/(.+)$").to("http://ical.example.com/caldav.php/.well-known/$1").when_request_uri_matches("/")
-          end
-        end
-
-        it "enables the davical site" do
-          expect(chef_run).to create_link("/etc/nginx/sites-enabled/davical").with(to: "/etc/nginx/sites-available/davical")
+        it "restarts php5-fpm on any changes" do
+          davical_configuration = chef_run.template("/etc/davical/config.php")
+          expect(davical_configuration).to notify("service[php5-fpm]").to(:restart)
         end
       end
     end
 
-    it "sets up the davical database" do
-      expect(chef_run).to include_recipe("chef-davical::database")
-    end
+    context "10.04" do
+      let(:chef_run) { ChefSpec::SoloRunner.new(platform: "ubuntu", version: "10.04") do |node|
+        node.set[:davical][:server_name] = "ical.example.com"
+        node.set[:davical][:system_name] = "Davical Application"
+        node.set[:davical][:system_email] = "admin@email.com"
+        node.set[:davical][:time_zone] = "Europe/London"
+      end.converge(described_recipe) }
 
-    describe "configuring davical" do
-      it "creates the davical config file" do
-        expect(chef_run).to create_template("/etc/davical/config.php").with(mode: 0644)
+      it "adds the brianmercer PHP repo" do
+        expect(chef_run).to add_apt_repository("brianmercer-php").with(uri: "http://ppa.launchpad.net/brianmercer/php/ubuntu", keyserver: "keyserver.ubuntu.com", key: "8D0DC64F")
       end
 
-      it "configures the application's connection to the davical database" do
-        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->pg_connect\[\] = \'dbname=davical port=5432 user=davical_app\';/)
+      it "installs php5-fpm" do
+        expect(chef_run).to install_package "php5-fpm"
       end
 
-      it "configures application's FQDN" do
-        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->domain_name = \'ical.example.com\';/)
-      end
-
-      it "configures the system name" do
-        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->system_name = \'Davical Application\';/)
-      end
-
-      it "configures the system's email" do
-        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->admin_email = \'admin@email.com\';/)
-      end
-
-      it "configures the system time zone" do
-        expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->local_tzid = \'Europe\/London\';/)
-      end
-
-      it "restarts php5-fpm on any changes" do
-        davical_configuration = chef_run.template("/etc/davical/config.php")
-        expect(davical_configuration).to notify("service[php5-fpm]").to(:restart)
+      it "starts php-fpm" do
+        expect(chef_run).to start_service "php5-fpm"
       end
     end
-
   end
-
 end
