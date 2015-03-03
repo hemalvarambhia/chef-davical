@@ -11,6 +11,10 @@ describe "chef-davical::web_server" do
           node.set[:davical][:time_zone] = "Europe/London"
         end.converge(described_recipe) }
 
+        it "installs ufw" do
+          expect(chef_run).to install_package "ufw"
+        end
+
         it "opens up firewall to http connections" do
           expect(chef_run).to allow_firewall_rule("http").with(protocol: :tcp, port: 80)
         end
