@@ -84,6 +84,10 @@ describe "chef-davical::web_server" do
         it "stops apache2" do
           expect(chef_run).to stop_service "apache2"
         end
+
+        it "removes apache2" do
+          expect(chef_run).to remove_package "apache2"
+        end
       end
     end
   end

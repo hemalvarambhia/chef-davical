@@ -6,9 +6,15 @@ firewall_rule "http" do
   action :allow
 end
 
-service "apache2" do
-  action :stop
-end if node.platform_version == "10.04"
+if node.platform_version == "10.04"
+  service "apache2" do
+    action :stop
+  end
+
+  package "apache2" do
+    action :remove
+  end
+end
 
 package "nginx" do
   action :install
