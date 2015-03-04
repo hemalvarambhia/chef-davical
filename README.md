@@ -23,6 +23,18 @@ Attributes
     <th>Default</th>
   </tr>
   <tr>
+    <td><tt>[:davical][:dir]</tt></td>
+    <td>String</td>
+    <td>Path to the davical directory</td>
+    <td><tt>/usr/share/davical</tt></td>
+  </tr>
+  <tr>
+    <td><tt>[:awl][:dir]</tt></td>
+    <td>String</td>
+    <td>Path to the awl directory</td>
+    <td><tt>/usr/share/awl</tt></td>
+  </tr>
+  <tr>
     <td><tt>[:davical][:server_name]</tt></td>
     <td>String</td>
     <td>Server name that the nginx configuration responds to</td>

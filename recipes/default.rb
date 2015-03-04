@@ -22,6 +22,19 @@ package "php5-curl" do
 end
 
 if node.platform_version == "10.04"
+  ruby_block "setup-symbolic-links-to-awl-files" do
+    block do
+      require 'fileutils'
+      Dir.glob("#{node[:awl][:dir]}/inc/*").each do |awl_file|
+        corresponding_davical_sym_link = "#{node[:davical][:dir]}/inc/#{File.basename(awl_file)}"
+        unless File.symlink?(corresponding_davical_sym_link)
+          FileUtils.ln_s(awl_file, corresponding_davical_sym_link)
+        end
+      end
+    end
+    action :run
+  end
+
   package "python-software-properties" do
     action :install
   end
