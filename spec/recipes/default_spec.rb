@@ -66,6 +66,10 @@ describe "chef-davical::default" do
         node.set[:davical][:time_zone] = "Europe/London"
       end.converge(described_recipe) }
 
+      it "sets up symbolic links to awls files" do
+        expect(chef_run).to run_ruby_block("symbolic_links_to_awl_files")
+      end
+
       it "adds the brianmercer PHP repo" do
         expect(chef_run).to add_apt_repository("brianmercer-php").with(uri: "http://ppa.launchpad.net/brianmercer/php/ubuntu", keyserver: "keyserver.ubuntu.com", key: "8D0DC64F")
       end

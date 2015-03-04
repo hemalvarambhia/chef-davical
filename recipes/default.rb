@@ -22,7 +22,7 @@ package "php5-curl" do
 end
 
 if node.platform_version == "10.04"
-  ruby_block "setup-symbolic-links-to-awl-files" do
+  ruby_block "symbolic_links_to_awl_files" do
     block do
       require 'fileutils'
       Dir.glob("#{node[:awl][:dir]}/inc/*").each do |awl_file|
