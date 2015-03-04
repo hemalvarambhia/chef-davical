@@ -9,7 +9,7 @@ Requirements
 - `apt` - update the apt-cache
 
 #### Operating systems
-Ubuntu
+Ubuntu 10.04 and 12.04
 
 Attributes
 ----------
