@@ -17,45 +17,22 @@ include_recipe "chef-davical::web_server"
 
 include_recipe "chef-davical::database"
 
-package "php5-curl" do
-  action :install
-end
+include_recipe "chef-davical::php_packages"
 
 if node.platform_version == "10.04"
-  package "python-software-properties" do
-    action :install
-  end
-
-  apt_repository "brianmercer-php" do
-    uri "http://ppa.launchpad.net/brianmercer/php/ubuntu"
-    distribution node[:lsb][:codename]
-    components ["main"]
-    keyserver "keyserver.ubuntu.com"
-    key "8D0DC64F"
-    action :add
-  end
-
-  package "php5-fpm" do
-    action :install
-  end
-end
-
-service "php5-fpm" do
-  action :start
-end
-
-ruby_block "symbolic_links_to_awl_files" do
-  block do
-    require 'fileutils'
-    Dir.glob("#{node[:awl][:dir]}/inc/*").each do |awl_file|
-      corresponding_davical_sym_link = "#{node[:davical][:dir]}/inc/#{File.basename(awl_file)}"
-      unless File.symlink?(corresponding_davical_sym_link)
-        FileUtils.ln_s(awl_file, corresponding_davical_sym_link)
+  ruby_block "symbolic_links_to_awl_files" do
+    block do
+      require 'fileutils'
+      Dir.glob("#{node[:awl][:dir]}/inc/*").each do |awl_file|
+        corresponding_davical_sym_link = "#{node[:davical][:dir]}/inc/#{File.basename(awl_file)}"
+        unless File.symlink?(corresponding_davical_sym_link)
+          FileUtils.ln_s(awl_file, corresponding_davical_sym_link)
+        end
       end
     end
+    action :run
   end
-  action :run
-end if node.platform_version == "10.04"
+end
 
 davical_configuration = {
     domain_name: node[:davical][:server_name],
@@ -63,6 +40,7 @@ davical_configuration = {
     local_time_zone: node[:davical][:time_zone],
     system_name: node[:davical][:system_name]
 }
+
 template "/etc/davical/config.php" do
   source "config.php.erb"
   variables davical_configuration
