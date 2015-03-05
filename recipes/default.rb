@@ -40,7 +40,6 @@ davical_configuration = {
     local_time_zone: node[:davical][:time_zone],
     system_name: node[:davical][:system_name]
 }
-
 template "/etc/davical/config.php" do
   source "config.php.erb"
   variables davical_configuration

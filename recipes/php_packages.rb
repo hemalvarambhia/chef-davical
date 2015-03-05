@@ -15,10 +15,10 @@ if node.platform_version == "10.04"
     key "8D0DC64F"
     action :add
   end
+end
 
-  package "php5-fpm" do
-    action :install
-  end
+package "php5-fpm" do
+  action :install
 end
 
 service "php5-fpm" do

@@ -14,10 +14,6 @@ describe "chef-davical::default" do
         expect(chef_run).to install_package "davical"
       end
 
-      it "installs php5-curl" do
-        expect(chef_run).to install_package "php5-curl"
-      end
-
       it "sets up the web server" do
         expect(chef_run).to include_recipe "chef-davical::web_server"
       end
@@ -26,8 +22,8 @@ describe "chef-davical::default" do
         expect(chef_run).to include_recipe "chef-davical::database"
       end
 
-      it "starts php-fpm" do
-        expect(chef_run).to start_service "php5-fpm"
+      it "installs PHP web app-supporting software" do
+        expect(chef_run).to include_recipe "chef-davical::php_packages"
       end
 
       describe "configuring davical" do
@@ -76,14 +72,6 @@ describe "chef-davical::default" do
 
       it "sets up symbolic links to awls files" do
         expect(chef_run).to run_ruby_block("symbolic_links_to_awl_files")
-      end
-
-      it "adds the brianmercer PHP repo" do
-        expect(chef_run).to add_apt_repository("brianmercer-php").with(uri: "http://ppa.launchpad.net/brianmercer/php/ubuntu", keyserver: "keyserver.ubuntu.com", key: "8D0DC64F")
-      end
-
-      it "installs php5-fpm" do
-        expect(chef_run).to install_package "php5-fpm"
       end
     end
   end
