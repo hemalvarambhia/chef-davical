@@ -26,33 +26,41 @@ describe "chef-davical::default" do
         expect(chef_run).to include_recipe "chef-davical::database"
       end
 
+      it "starts php-fpm" do
+        expect(chef_run).to start_service "php5-fpm"
+      end
+
       describe "configuring davical" do
+        before :each do
+          @davical_configuration = "/etc/davical/config.php"
+        end
+
         it "creates the davical config file" do
-          expect(chef_run).to create_template("/etc/davical/config.php").with(mode: 0644)
+          expect(chef_run).to create_template(@davical_configuration).with(mode: 0644)
         end
 
         it "configures the application's connection to the davical database" do
-          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->pg_connect\[\] = \'dbname=davical port=5432 user=davical_app\';/)
+          expect(chef_run).to render_file(@davical_configuration).with_content(/\$c->pg_connect\[\] = \'dbname=davical port=5432 user=davical_app\';/)
         end
 
         it "configures application's FQDN" do
-          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->domain_name = \'ical.example.com\';/)
+          expect(chef_run).to render_file(@davical_configuration).with_content(/\$c->domain_name = \'ical.example.com\';/)
         end
 
         it "configures the system name" do
-          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->system_name = \'Davical Application\';/)
+          expect(chef_run).to render_file(@davical_configuration).with_content(/\$c->system_name = \'Davical Application\';/)
         end
 
         it "configures the system's email" do
-          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->admin_email = \'admin@email.com\';/)
+          expect(chef_run).to render_file(@davical_configuration).with_content(/\$c->admin_email = \'admin@email.com\';/)
         end
 
         it "configures the system time zone" do
-          expect(chef_run).to render_file("/etc/davical/config.php").with_content(/\$c->local_tzid = \'Europe\/London\';/)
+          expect(chef_run).to render_file(@davical_configuration).with_content(/\$c->local_tzid = \'Europe\/London\';/)
         end
 
         it "restarts php5-fpm on any changes" do
-          davical_configuration = chef_run.template("/etc/davical/config.php")
+          davical_configuration = chef_run.template(@davical_configuration)
           expect(davical_configuration).to notify("service[php5-fpm]").to(:restart)
         end
       end
@@ -76,10 +84,6 @@ describe "chef-davical::default" do
 
       it "installs php5-fpm" do
         expect(chef_run).to install_package "php5-fpm"
-      end
-
-      it "starts php-fpm" do
-        expect(chef_run).to start_service "php5-fpm"
       end
     end
   end
