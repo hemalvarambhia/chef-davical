@@ -17,6 +17,10 @@ describe service("nginx") do
   it { should be_running }
 end
 
+describe service("apache2") do
+  it { should_not be_running }
+end
+
 describe file("/etc/nginx/sites-available/davical") do
   it { should be_file }
   its(:content) {

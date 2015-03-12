@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe "postgresql server" do
   version = case os[:release]
+              when "14.04"
+                "9.3"
               when "12.04"
                 "9.1"
               when "10.04"

@@ -6,7 +6,7 @@ firewall_rule "http" do
   action :allow
 end
 
-if node.platform_version == "10.04"
+if node.platform_version == "10.04" or node.platform_version == "14.04"
   service "apache2" do
     action :stop
   end

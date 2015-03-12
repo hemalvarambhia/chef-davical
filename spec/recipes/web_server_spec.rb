@@ -89,6 +89,23 @@ describe "chef-davical::web_server" do
           expect(chef_run).to remove_package "apache2"
         end
       end
+
+      context "version 14.04" do
+        let(:chef_run) { ChefSpec::SoloRunner.new(platform: "ubuntu", version: "14.04") do |node|
+          node.set[:davical][:server_name] = "ical.example.com"
+          node.set[:davical][:system_name] = "Davical Application"
+          node.set[:davical][:system_email] = "admin@email.com"
+          node.set[:davical][:time_zone] = "Europe/London"
+        end.converge(described_recipe) }
+
+        it "stops apache2" do
+          expect(chef_run).to stop_service "apache2"
+        end
+
+        it "removes apache2" do
+          expect(chef_run).to remove_package "apache2"
+        end
+      end
     end
   end
 end

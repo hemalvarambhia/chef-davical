@@ -7,12 +7,14 @@ version = case node.platform_version
               "8.4"
             when "12.04"
               "9.1"
+            when "14.04"
+              "9.3"
           end
 
 postgresql_service = case node.platform_version
                  when "10.04"
                    "postgresql-8.4"
-                 when "12.04"
+                 when "12.04", "14.04"
                    "postgresql"
                end
 

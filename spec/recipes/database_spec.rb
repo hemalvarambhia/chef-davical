@@ -71,5 +71,24 @@ describe "chef-davical::database" do
         expect(chef_run).to run_execute("create-database.sh").with(cwd: "/usr/share/davical/dba", command: "./create-database.sh", user: "postgres" )
       end
     end
+
+    context "14.04" do
+      let(:chef_run) { ChefSpec::SoloRunner.new(platform: "ubuntu", version: "14.04") do |node|
+        node.set[:davical][:server_name] = "ical.example.com"
+        node.set[:davical][:system_name] = "Davical Application"
+        node.set[:davical][:system_email] = "admin@email.com"
+        node.set[:davical][:time_zone] = "Europe/London"
+      end.converge(described_recipe) }
+
+      it "installs postgresql server 9.3" do
+        expect(chef_run).to install_package("postgresql-9.3")
+      end
+
+      describe "configuration" do
+        it "creates the host-based authentication file" do
+          expect(chef_run).to create_cookbook_file("/etc/postgresql/9.3/main/pg_hba.conf")
+        end
+      end
+    end
   end
 end
