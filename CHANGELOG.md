@@ -3,9 +3,9 @@ chef-davical CHANGELOG
 
 This file is used to list changes made in each version of the chef-davical cookbook.
 
-0.1.0
+0.4.2
 -----
-- [your_name] - Initial release of chef-davical
+- [hemalvarambhia] - Install DAViCal on a Ubuntu 14.04 server
 
 - - -
 Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
