@@ -14,8 +14,15 @@ describe "postgresql server" do
     it { should be_installed }
   end
 
-  describe service "postgresql" do
+  describe service("postgresql-8.4"), if: os[:release] == "10.04" do
     it { should be_enabled }
+  end
+
+  describe service("postgresql"), if: os[:release] > "10.04" do
+    it { should be_enabled }
+  end
+
+  describe service "postgresql" do
     it { should be_running }
   end
 
