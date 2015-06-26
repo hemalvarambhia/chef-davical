@@ -16,6 +16,9 @@ platforms:
   - name: ubuntu-10.04
     driver:
       name: vagrant
+  - name: centos-7.0
+    driver:
+      name: vagrant
   - name: digitalocean-ubuntu-14.04
     driver:
       name: digitalocean

@@ -20,7 +20,7 @@ describe "chef-davical::database" do
 
       context "when cluster is already initialised" do
         it "does not initialise it again" do
-          Chef::Resource::Execute.any_instance.stub(:cluster_initialised?).with("8.4").and_return(true)
+          Chef::Resource::Execute.any_instance.stub(:cluster_initialised?).and_return(true)
 
           expect(chef_run).to_not run_execute("initialise-database-cluster").with(command: "pg_createcluster --locale en_GB.UTF-8 8.4 main")
         end

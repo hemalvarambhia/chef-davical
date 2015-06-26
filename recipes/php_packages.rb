@@ -1,5 +1,15 @@
-package "php5-curl" do
-  action :install
+if node.platform == "ubuntu"
+  package "php5-curl" do
+    action :install
+  end
+else
+  package "php-common" do
+    action :install
+  end
+
+  package "php-curl" do
+    action :install
+  end
 end
 
 if node.platform_version == "10.04"
@@ -17,10 +27,16 @@ if node.platform_version == "10.04"
   end
 end
 
-package "php5-fpm" do
+php_fpm = if node.platform == "ubuntu"
+            "php5-fpm"
+          else
+            "php-fpm"
+          end
+
+package php_fpm do
   action :install
 end
 
-service "php5-fpm" do
+service php_fpm do
   action :start
 end

@@ -5,17 +5,28 @@ package postgresql_server do
   action :install
 end
 
+%w{perl-YAML perl-DBD-Pg}.each do |library|
+  package library do
+    action :install
+  end
+end if node.platform == "centos"
+
 service postgresql_service do
   action :nothing
 end
 
 execute("initialise-database-cluster") do
   command "pg_createcluster --locale en_GB.UTF-8 #{version} main"
-  not_if { cluster_initialised?(version) }
+  not_if { cluster_initialised? }
   action :run
 end if node.platform_version == "10.04"
 
-cookbook_file "/etc/postgresql/#{version}/main/pg_hba.conf" do
+execute "initialize-database-cluster" do
+  command "postgresql-setup initdb"
+  action :run
+end if node.platform == "centos"
+
+cookbook_file "#{database_conf_dir}/pg_hba.conf" do
   owner "postgres"
   group "postgres"
   mode 0600

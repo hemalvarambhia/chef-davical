@@ -9,9 +9,9 @@
 
 include_recipe "apt::default"
 
-package "davical" do
-  action :install
-end
+include_recipe "yum-epel::default"
+
+include_recipe "chef-davical::davical"
 
 include_recipe "chef-davical::web_server"
 
@@ -34,6 +34,11 @@ if node.platform_version == "10.04"
   end
 end
 
+php_fpm = if node.platform == "ubuntu"
+            "php5-fpm"
+          else
+            "php-fpm"
+          end
 davical_configuration = {
     domain_name: node[:davical][:server_name],
     admin_email: node[:davical][:system_email],
@@ -44,6 +49,6 @@ template "/etc/davical/config.php" do
   source "config.php.erb"
   variables davical_configuration
   mode 0644
-  notifies :restart, "service[php5-fpm]"
+  notifies :restart, "service[#{php_fpm}]"
   action :create
 end

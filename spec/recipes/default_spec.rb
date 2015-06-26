@@ -75,4 +75,18 @@ describe "chef-davical::default" do
       end
     end
   end
+
+  context "CentOS" do
+    let(:chef_run) { ChefSpec::SoloRunner.new(platform: "centos", version: "7.0") do |node|
+      node.set[:davical][:server_name] = "ical.example.com"
+      node.set[:davical][:system_name] = "Davical Application"
+      node.set[:davical][:system_email] = "admin@email.com"
+      node.set[:davical][:time_zone] = "Europe/London"
+    end.converge(described_recipe) }    
+
+    it "clones the davical and awl sources" do
+      expect(chef_run).to sync_git("/usr/share/davical").with(repository: "https://gitlab.com/davical-project/davical.git")
+      expect(chef_run).to sync_git("/usr/share/awl").with(repository: "https://gitlab.com/davical-project/awl.git")
+    end    
+  end
 end

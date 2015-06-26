@@ -1,8 +1,8 @@
 module Postgresql
   module Helper
     include Chef::Mixin::ShellOut
-    def cluster_initialised?(version)
-      postgres_dir_exists_command = shell_out("[ -d /etc/postgresql/#{version}/main/ ] && echo initialised", returns: [0, 2])
+    def cluster_initialised?
+      postgres_dir_exists_command = shell_out("[ -d #{database_conf_dir} ] && echo initialised", returns: [0, 2])
 
       postgres_dir_exists_command.stderr.empty? and postgres_dir_exists_command.stdout.strip == "initialised"
     end
@@ -14,6 +14,14 @@ def postgresql_server
     "postgresql-#{version}"
   else
     "postgresql-server"
+  end
+end
+
+def database_conf_dir
+  if node.platform == "ubuntu"
+    "/etc/postgresql/#{version}/main"
+  else
+    "/var/lib/pgsql/data"
   end
 end
 

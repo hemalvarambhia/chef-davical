@@ -9,4 +9,5 @@ version          '0.4.2'
 supports "ubuntu"
 
 depends "apt"
+depends "yum-epel"
 depends "firewall"

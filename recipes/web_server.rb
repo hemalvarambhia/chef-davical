@@ -24,14 +24,22 @@ service "nginx" do
   action [:enable, :start]
 end
 
-template "/etc/nginx/sites-available/davical" do
+conf_dir = if node.platform == "ubuntu"
+             "/etc/nginx/sites-available"
+           else
+             "/etc/nginx/conf.d"
+           end
+
+template "#{conf_dir}/davical" do
   source "nginx_configuration.erb"
   variables configuration: {server_name: node[:davical][:server_name] }
   notifies :restart, "service[nginx]"
   action :create
 end
 
-link "/etc/nginx/sites-enabled/davical" do
-  to "/etc/nginx/sites-available/davical"
-  action :create
+if node.platform == "ubuntu"
+  link "/etc/nginx/sites-enabled/davical" do
+    to "#{conf_dir}/davical"
+    action :create
+  end
 end
