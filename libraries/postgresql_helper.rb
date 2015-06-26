@@ -9,22 +9,36 @@ module Postgresql
   end
 end
 
+def postgresql_server
+  if node.platform == "ubuntu"
+    "postgresql-#{version}"
+  else
+    "postgresql-server"
+  end
+end
+
 def version
-  case node.platform_version
-    when "10.04"
-      "8.4"
-    when "12.04"
-      "9.1"
-    when "14.04"
-      "9.3"
+  if node.platform == "ubuntu"
+    case node.platform_version
+      when "10.04"
+        "8.4"
+      when "12.04"
+        "9.1"
+      when "14.04"
+        "9.3"
+    end
   end
 end
 
 def postgresql_service
-  case node.platform_version
-    when "10.04"
-      "postgresql-8.4"
-    when "12.04", "14.04"
-      "postgresql"
+  if node.platform == "ubuntu"
+    case node.platform_version
+      when "10.04"
+        "postgresql-8.4"
+      when "12.04", "14.04"
+        "postgresql"
+    end
+  else
+    "postgresql"
   end
 end

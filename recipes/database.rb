@@ -1,7 +1,7 @@
 Chef::Resource::Execute.send(:include, ChefDavical::Helper)
 Chef::Resource::Execute.send(:include, Postgresql::Helper)
 
-package "postgresql-#{version}" do
+package postgresql_server do
   action :install
 end
 
