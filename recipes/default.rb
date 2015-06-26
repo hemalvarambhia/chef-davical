@@ -9,7 +9,7 @@
 
 include_recipe "apt::default"
 
-include_recipe "yum-epel::default"
+include_recipe "yum-epel::default" if node.platform == "centos"
 
 include_recipe "chef-davical::davical"
 
