@@ -36,3 +36,11 @@ suites:
     run_list:
       - recipe[chef-davical::default]
     attributes: {davical: {server_name: "ical.example.com", system_email: "admin@email.com", system_name: "Application" }}
+    excludes:
+      - centos-7.0
+  - name: redhat
+    run_list:
+      - recipe[chef-davical::default]
+    attributes: {davical: {server_name: "ical.example.com", system_email: "admin@email.com", system_name: "Application" }}
+    includes:
+      - centos-7.0
