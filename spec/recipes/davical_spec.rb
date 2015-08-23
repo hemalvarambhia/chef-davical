@@ -7,7 +7,6 @@ describe "chef-davical::davical" do
 
     end.converge(described_recipe)}
   
-
     it "installs davical deb package" do
       expect(chef_run).to install_package "davical"
     end
