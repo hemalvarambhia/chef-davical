@@ -2,9 +2,11 @@ module Postgresql
   module Helper
     include Chef::Mixin::ShellOut
     def cluster_initialised?
-      postgres_dir_exists_command = shell_out("[ -d #{database_conf_dir} ] && echo initialised", returns: [0, 2])
+      postgres_cluster_command = shell_out(
+          "[ -d #{database_conf_dir} -a -e #{database_conf_dir}/PG_VERSION ] && echo initialised",
+          returns: [0, 2])
 
-      postgres_dir_exists_command.stderr.empty? and postgres_dir_exists_command.stdout.strip == "initialised"
+      postgres_cluster_command.stderr.empty? and postgres_cluster_command.stdout.strip == "initialised"
     end
   end
 end
