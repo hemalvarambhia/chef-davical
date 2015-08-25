@@ -23,6 +23,7 @@ end if node.platform_version == "10.04"
 
 execute "initialize-database-cluster" do
   command "postgresql-setup initdb"
+  not_if { cluster_initialised? }
   action :run
 end if node.platform == "centos"
 
