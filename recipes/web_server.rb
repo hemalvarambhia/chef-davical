@@ -1,5 +1,3 @@
-include_recipe "firewall::default"
-
 firewall_rule "http" do
   protocol :tcp
   port 80
