@@ -20,6 +20,5 @@ end
 
 describe command("sudo su - postgres -c \"psql -c 'select datname from pg_database;'\"") do
     its(:stdout) { should match /davical/ }
-
     its(:exit_status) { should eq 0 }
 end
