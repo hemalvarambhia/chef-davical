@@ -8,6 +8,14 @@ describe "postgresql server" do
   describe service("postgresql") do
     it { should be_running }
   end
+
+  context "configuration" do
+    describe file "/var/lib/pgsql/data/pg_hba.conf" do
+      it { should be_file }
+      its(:content) { should match /local   davical    davical_dba   trust/ }
+      its(:content) { should match /local   davical    davical_app   trust/ }
+    end
+  end
 end
 
 describe command("sudo su - postgres -c \"psql -c 'select datname from pg_database;'\"") do
