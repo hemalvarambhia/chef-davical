@@ -26,7 +26,7 @@ describe "postgresql server" do
     it { should be_running }
   end
 
-  describe "configuration" do
+  context "configuration" do
     describe file "/etc/postgresql/#{version}/main/pg_hba.conf" do
       it { should be_file }
       its(:content) { should match /local   davical    davical_dba   trust/ }
@@ -36,7 +36,6 @@ describe "postgresql server" do
 
   describe command("sudo su - postgres -c \"psql -c 'select datname from pg_database;'\"") do
     its(:stdout) { should match /davical/ }
-
     its(:exit_status) { should eq 0 }
   end
 end
