@@ -15,7 +15,7 @@ describe "chef-davical::default" do
       end
 
       it "installs ufw" do
-         expect(chef_run).to install_package "ufw"
+        expect(chef_run).to install_package "ufw"
       end
 
       it "sets up the web server" do
