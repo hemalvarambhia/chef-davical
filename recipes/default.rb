@@ -11,6 +11,13 @@ include_recipe "apt::default"
 
 include_recipe "yum-epel::default" if node.platform == "centos"
 
+include_recipe "firewall::default"
+firewall_rule "ssh" do
+  protocol :tcp
+  port 22
+  action :allow
+end
+
 include_recipe "chef-davical::davical"
 
 include_recipe "chef-davical::web_server"
