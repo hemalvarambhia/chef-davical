@@ -34,6 +34,16 @@ cookbook_file "#{database_conf_dir}/pg_hba.conf" do
   action :create
 end
 
+[
+    "sed -i \"s/'PlPgSQL'/'plpgsql'/\" ./*sql ./patches/*sql",
+    "sed -i \"s/'SQL'/'sql'/\" ./*sql ./patches/*sql"
+].each do |command|
+  execute command do
+    cwd "/usr/share/davical/dba"
+    action :run
+  end
+end if node.platform_version == "14.04"
+
 execute "create-database.sh" do
   command "./create-database.sh"
   user "postgres"
