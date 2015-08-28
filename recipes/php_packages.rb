@@ -12,7 +12,7 @@ else
   end
 end
 
-if node.platform_version == "10.04"
+if ubuntu?("10.04")
   package "python-software-properties" do
     action :install
   end

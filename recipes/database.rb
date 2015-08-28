@@ -19,7 +19,7 @@ execute("initialise-database-cluster") do
   command "pg_createcluster --locale en_GB.UTF-8 #{version} main"
   not_if { cluster_initialised? }
   action :run
-end if node.platform_version == "10.04"
+end if ubuntu?("10.04")
 
 execute "initialize-database-cluster" do
   command "postgresql-setup initdb"
@@ -43,7 +43,7 @@ end
     cwd "/usr/share/davical/dba"
     action :run
   end
-end if node.platform_version == "14.04"
+end if ubuntu?("14.04")
 
 execute "create-database.sh" do
   command "./create-database.sh"

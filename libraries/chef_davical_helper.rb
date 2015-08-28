@@ -10,3 +10,6 @@ module ChefDavical
   end
 end
 
+def ubuntu?(version)
+  node.platform?("ubuntu") and node.platform_version ==	version
+end

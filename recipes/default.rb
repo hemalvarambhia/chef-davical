@@ -26,7 +26,7 @@ include_recipe "chef-davical::database"
 
 include_recipe "chef-davical::php_packages"
 
-if (node.platform_version == "10.04" and node.platform?("ubuntu")) or node.platform?("centos")
+if ubuntu?("10.04") or node.platform?("centos")
   ruby_block "symbolic_links_to_awl_files" do
     block do
       require 'fileutils'
