@@ -93,7 +93,7 @@ describe "chef-davical::database" do
       it "corrects procedural language references" do
         expect(chef_run).to run_execute "sed -i \"s/'PlPgSQL'/'plpgsql'/\" ./*sql ./patches/*sql"
         expect(chef_run).to run_execute "sed -i \"s/'SQL'/'sql'/\" ./*sql ./patches/*sql"            
-      end 
+      end
     end
   end
 
