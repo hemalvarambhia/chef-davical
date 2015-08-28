@@ -89,6 +89,11 @@ describe "chef-davical::database" do
           expect(chef_run).to create_cookbook_file("/etc/postgresql/9.3/main/pg_hba.conf")
         end
       end
+
+      it "corrects procedural language references" do
+        expect(chef_run).to run_execute "sed -i \"s/'PlPgSQL'/'plpgsql'/\" ./*sql ./patches/*sql"
+        expect(chef_run).to run_execute "sed -i \"s/'SQL'/'sql'/\" ./*sql ./patches/*sql"            
+      end 
     end
   end
 
