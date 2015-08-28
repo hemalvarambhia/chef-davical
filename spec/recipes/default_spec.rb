@@ -92,5 +92,9 @@ describe "chef-davical::default" do
       expect(chef_run).to sync_git("/usr/share/davical").with(repository: "https://gitlab.com/davical-project/davical.git")
       expect(chef_run).to sync_git("/usr/share/awl").with(repository: "https://gitlab.com/davical-project/awl.git")
     end    
+
+    it "sets up symbolic links to awls files" do
+      expect(chef_run).to run_ruby_block("symbolic_links_to_awl_files")
+    end
   end
 end
